@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LisaFlix – Movie Browser</title>
+  <title>LisaFlix – Watch Movies</title>
   <style>
     /* ===== RESET & BASE ===== */
     * {
@@ -13,10 +13,10 @@
     }
 
     body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-family: 'Segoe UI', system-ui, sans-serif;
       background: #0b0b0b;
       color: #e0e0e0;
-      padding: 20px;
+      padding: 16px;
       min-height: 100vh;
     }
 
@@ -32,9 +32,9 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 16px;
-      padding: 16px 0 24px;
+      padding: 12px 0 20px;
       border-bottom: 1px solid #222;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
 
     .logo {
@@ -69,7 +69,6 @@
       border-color: #4a9eff;
       background: #1e1e1e;
     }
-
     .search-box input::placeholder {
       color: #555;
     }
@@ -119,8 +118,8 @@
     /* ===== MOVIE GRID ===== */
     .movie-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 24px;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 22px;
       margin-top: 16px;
     }
 
@@ -134,25 +133,25 @@
     }
 
     .movie-card:hover {
-      transform: scale(1.03);
+      transform: scale(1.04);
       border-color: #4a9eff;
       box-shadow: 0 8px 30px rgba(74, 158, 255, 0.15);
     }
 
     .movie-card img {
       width: 100%;
-      height: 270px;
+      height: 250px;
       object-fit: cover;
       display: block;
       background: #1a1a1a;
     }
 
     .movie-card .info {
-      padding: 14px 14px 18px;
+      padding: 12px 14px 16px;
     }
 
     .movie-card .info h3 {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
       color: #fff;
       margin-bottom: 4px;
@@ -173,118 +172,111 @@
       font-weight: 600;
     }
 
-    /* ===== MODAL (DETAILS) ===== */
-    .modal-overlay {
+    /* ===== VIDEO PLAYER MODAL ===== */
+    .player-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(6px);
+      background: rgba(0, 0, 0, 0.92);
+      backdrop-filter: blur(8px);
       display: none;
       justify-content: center;
       align-items: center;
       padding: 20px;
       z-index: 999;
+      flex-direction: column;
     }
 
-    .modal-overlay.active {
+    .player-overlay.active {
       display: flex;
     }
 
-    .modal {
-      background: #181818;
-      max-width: 700px;
+    .player-box {
       width: 100%;
-      border-radius: 24px;
+      max-width: 960px;
+      background: #0d0d0d;
+      border-radius: 20px;
       border: 1px solid #2a2a2a;
-      padding: 32px;
+      overflow: hidden;
       position: relative;
-      max-height: 90vh;
-      overflow-y: auto;
-      animation: fadeUp 0.3s ease;
+      padding: 16px 16px 20px;
     }
 
-    .modal .close-btn {
+    .player-box .close-btn {
       position: absolute;
-      top: 16px;
-      right: 20px;
+      top: 8px;
+      right: 16px;
       background: none;
       border: none;
       color: #888;
-      font-size: 28px;
+      font-size: 30px;
+      cursor: pointer;
+      z-index: 10;
+      transition: 0.2s;
+    }
+
+    .player-box .close-btn:hover {
+      color: #fff;
+    }
+
+    .player-box .movie-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #fff;
+      margin: 4px 0 12px;
+      padding-right: 40px;
+    }
+
+    .player-box iframe {
+      width: 100%;
+      height: 460px;
+      border: none;
+      border-radius: 12px;
+      background: #000;
+    }
+
+    .player-box .source-selector {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .player-box .source-selector button {
+      padding: 8px 20px;
+      border: 1px solid #2a2a2a;
+      border-radius: 60px;
+      background: transparent;
+      color: #aaa;
+      font-size: 14px;
       cursor: pointer;
       transition: 0.2s;
     }
 
-    .modal .close-btn:hover {
+    .player-box .source-selector button:hover,
+    .player-box .source-selector button.active {
+      background: #4a9eff;
       color: #fff;
+      border-color: #4a9eff;
     }
 
-    .modal .modal-poster {
-      width: 100%;
-      max-height: 320px;
-      object-fit: cover;
-      border-radius: 16px;
-      margin-bottom: 16px;
-      background: #1a1a1a;
-    }
-
-    .modal h2 {
-      font-size: 26px;
-      color: #fff;
-      margin-bottom: 4px;
-    }
-
-    .modal .tagline {
-      color: #888;
-      font-style: italic;
-      margin-bottom: 12px;
-    }
-
-    .modal .overview {
-      color: #ccc;
-      line-height: 1.6;
-      font-size: 15px;
-      margin-bottom: 16px;
-    }
-
-    .modal .details-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px 20px;
+    .player-box .error-msg {
+      color: #ff6b6b;
       font-size: 14px;
-      color: #aaa;
+      margin-top: 10px;
+      display: none;
     }
 
-    .modal .details-grid strong {
-      color: #ddd;
-    }
-
-    .modal .details-grid .label {
-      color: #666;
-    }
-
-    @keyframes fadeUp {
-      0% { opacity: 0; transform: translateY(16px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ===== LOADING & EMPTY ===== */
-    .loading {
-      text-align: center;
-      color: #666;
-      padding: 60px 0;
-      font-size: 18px;
-    }
-
+    /* ===== LOADING / EMPTY ===== */
+    .loading,
     .empty {
       text-align: center;
-      color: #555;
+      color: #666;
       padding: 60px 0;
       font-size: 18px;
     }
 
     /* ===== RESPONSIVE ===== */
-    @media (max-width: 600px) {
+    @media (max-width: 640px) {
       header {
         flex-direction: column;
         align-items: stretch;
@@ -298,16 +290,22 @@
       }
       .movie-grid {
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        gap: 16px;
+        gap: 14px;
       }
       .movie-card img {
         height: 200px;
       }
-      .modal {
-        padding: 20px;
+      .player-box iframe {
+        height: 240px;
       }
-      .modal .details-grid {
-        grid-template-columns: 1fr;
+      .player-box .movie-title {
+        font-size: 17px;
+      }
+    }
+
+    @media (min-width: 641px) and (max-width: 1024px) {
+      .player-box iframe {
+        height: 380px;
       }
     }
   </style>
@@ -342,28 +340,26 @@
   </div>
 </div>
 
-<!-- ===== MODAL ===== -->
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal">
-    <button class="close-btn" id="closeModalBtn">&times;</button>
-    <img class="modal-poster" id="modalPoster" src="" alt="Poster" />
-    <h2 id="modalTitle"></h2>
-    <div class="tagline" id="modalTagline"></div>
-    <div class="overview" id="modalOverview"></div>
-    <div class="details-grid">
-      <div><span class="label">⭐ Rating</span> <span id="modalRating">—</span></div>
-      <div><span class="label">📅 Release</span> <span id="modalRelease">—</span></div>
-      <div><span class="label">🎬 Genres</span> <span id="modalGenres">—</span></div>
-      <div><span class="label">⏱ Runtime</span> <span id="modalRuntime">—</span></div>
+<!-- ===== VIDEO PLAYER OVERLAY ===== -->
+<div class="player-overlay" id="playerOverlay">
+  <div class="player-box">
+    <button class="close-btn" id="closePlayerBtn">&times;</button>
+    <div class="movie-title" id="playerTitle">Movie Title</div>
+    <iframe id="playerIframe" src="" allowfullscreen></iframe>
+    <div class="source-selector" id="sourceSelector">
+      <button class="active" data-src="vidsrc">VidSrc</button>
+      <button data-src="2embed">2Embed</button>
+      <button data-src="embed">Embed</button>
     </div>
+    <div class="error-msg" id="playerError">⚠️ Failed to load video. Try another source.</div>
   </div>
 </div>
 
 <script>
   // ================================================================
-  // CONFIGURATION – GET YOUR FREE API KEY FROM TMDB
+  // CONFIGURATION – GET FREE TMDB API KEY
   // ================================================================
-  const API_KEY = 'e0a7266a5d0e95c36475f349d8bc0a5a'; // ← PALITAN ITO
+  const TMDB_API_KEY = 'YOUR_TMDB_API_KEY'; // ← PALITAN ITO
   const BASE_IMAGE = 'https://image.tmdb.org/t/p/w500';
 
   // ================================================================
@@ -373,6 +369,8 @@
   let currentGenre = '';
   let currentQuery = '';
   let isLoading = false;
+  let currentMovieId = null;
+  let currentTitle = '';
 
   // ================================================================
   // DOM REFS
@@ -382,17 +380,12 @@
   const searchBtn = document.getElementById('searchBtn');
   const genreFilters = document.getElementById('genreFilters');
 
-  // Modal
-  const modalOverlay = document.getElementById('modalOverlay');
-  const closeModalBtn = document.getElementById('closeModalBtn');
-  const modalPoster = document.getElementById('modalPoster');
-  const modalTitle = document.getElementById('modalTitle');
-  const modalTagline = document.getElementById('modalTagline');
-  const modalOverview = document.getElementById('modalOverview');
-  const modalRating = document.getElementById('modalRating');
-  const modalRelease = document.getElementById('modalRelease');
-  const modalGenres = document.getElementById('modalGenres');
-  const modalRuntime = document.getElementById('modalRuntime');
+  const playerOverlay = document.getElementById('playerOverlay');
+  const closePlayerBtn = document.getElementById('closePlayerBtn');
+  const playerIframe = document.getElementById('playerIframe');
+  const playerTitle = document.getElementById('playerTitle');
+  const sourceSelector = document.getElementById('sourceSelector');
+  const playerError = document.getElementById('playerError');
 
   // ================================================================
   // FETCH MOVIES
@@ -405,11 +398,13 @@
     try {
       let url;
       if (currentQuery.trim()) {
-        url = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(currentQuery)}&page=${page}`;
+        url =
+          `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(currentQuery)}&page=${page}`;
       } else if (currentGenre) {
-        url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=${currentGenre}&page=${page}&sort_by=popularity.desc`;
+        url =
+          `https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_API_KEY}&with_genres=${currentGenre}&page=${page}&sort_by=popularity.desc`;
       } else {
-        url = `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&page=${page}`;
+        url = `https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_API_KEY}&page=${page}`;
       }
 
       const res = await fetch(url);
@@ -421,7 +416,7 @@
         grid.innerHTML = '<div class="empty">No movies found.</div>';
       }
     } catch (err) {
-      grid.innerHTML = '<div class="empty">Error loading movies. Check your API key or internet.</div>';
+      grid.innerHTML = '<div class="empty">Error loading movies. Check your API key.</div>';
       console.error(err);
     }
 
@@ -433,13 +428,13 @@
   // ================================================================
   function renderMovies(movies) {
     grid.innerHTML = movies.map(m => {
-      const poster = m.poster_path
-        ? `${BASE_IMAGE}${m.poster_path}`
-        : 'https://via.placeholder.com/500x750/1a1a1a/444?text=No+Poster';
+      const poster = m.poster_path ?
+        `${BASE_IMAGE}${m.poster_path}` :
+        'https://via.placeholder.com/500x750/1a1a1a/444?text=No+Poster';
       const rating = m.vote_average ? m.vote_average.toFixed(1) : '—';
       const year = m.release_date ? m.release_date.slice(0, 4) : '—';
       return `
-        <div class="movie-card" data-id="${m.id}">
+        <div class="movie-card" data-id="${m.id}" data-title="${m.title}">
           <img src="${poster}" alt="${m.title}" loading="lazy" />
           <div class="info">
             <h3>${m.title}</h3>
@@ -452,47 +447,68 @@
       `;
     }).join('');
 
-    // Click to open modal
+    // Click to open player
     grid.querySelectorAll('.movie-card').forEach(card => {
       card.addEventListener('click', () => {
         const id = card.dataset.id;
-        openModal(id);
+        const title = card.dataset.title;
+        openPlayer(id, title);
       });
     });
   }
 
   // ================================================================
-  // MODAL – FETCH DETAILS
+  // PLAYER – OPEN & LOAD STREAM
   // ================================================================
-  async function openModal(movieId) {
-    try {
-      const res = await fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}?api_key=${API_KEY}&append_to_response=credits`
-      );
-      const m = await res.json();
+  function openPlayer(movieId, title) {
+    currentMovieId = movieId;
+    currentTitle = title;
+    playerTitle.textContent = title;
+    playerError.style.display = 'none';
+    playerOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
 
-      modalPoster.src = m.poster_path
-        ? `${BASE_IMAGE}${m.poster_path}`
-        : 'https://via.placeholder.com/500x750/1a1a1a/444?text=No+Poster';
-      modalTitle.textContent = m.title;
-      modalTagline.textContent = m.tagline || '';
-      modalOverview.textContent = m.overview || 'No overview available.';
-      modalRating.textContent = m.vote_average ? m.vote_average.toFixed(1) + ' / 10' : '—';
-      modalRelease.textContent = m.release_date || '—';
-      modalGenres.textContent = m.genres ? m.genres.map(g => g.name).join(', ') : '—';
-      modalRuntime.textContent = m.runtime ? m.runtime + ' min' : '—';
-
-      modalOverlay.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    } catch (err) {
-      console.error(err);
-      alert('Error loading movie details.');
+    // Load default source
+    const activeSource = sourceSelector.querySelector('button.active');
+    if (activeSource) {
+      loadStream(activeSource.dataset.src);
+    } else {
+      loadStream('vidsrc');
     }
   }
 
-  function closeModal() {
-    modalOverlay.classList.remove('active');
+  function closePlayer() {
+    playerOverlay.classList.remove('active');
     document.body.style.overflow = '';
+    playerIframe.src = '';
+    currentMovieId = null;
+  }
+
+  function loadStream(source) {
+    if (!currentMovieId) return;
+    playerError.style.display = 'none';
+
+    let embedUrl = '';
+    switch (source) {
+      case 'vidsrc':
+        embedUrl = `https://vidsrc.to/embed/movie/${currentMovieId}`;
+        break;
+      case '2embed':
+        embedUrl = `https://www.2embed.cc/embed/${currentMovieId}`;
+        break;
+      case 'embed':
+        embedUrl = `https://embed.su/embed/movie/${currentMovieId}`;
+        break;
+      default:
+        embedUrl = `https://vidsrc.to/embed/movie/${currentMovieId}`;
+    }
+
+    playerIframe.src = embedUrl;
+
+    // Mark active button
+    sourceSelector.querySelectorAll('button').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.src === source);
+    });
   }
 
   // ================================================================
@@ -526,17 +542,26 @@
     fetchMovies();
   });
 
-  // Modal close
-  closeModalBtn.addEventListener('click', closeModal);
-  modalOverlay.addEventListener('click', (e) => {
-    if (e.target === modalOverlay) closeModal();
+  // Player controls
+  closePlayerBtn.addEventListener('click', closePlayer);
+  playerOverlay.addEventListener('click', (e) => {
+    if (e.target === playerOverlay) closePlayer();
   });
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeModal();
+    if (e.key === 'Escape') closePlayer();
+  });
+
+  // Source switching
+  sourceSelector.addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    sourceSelector.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    loadStream(btn.dataset.src);
   });
 
   // ================================================================
-  // INFINITE SCROLL (LOAD MORE)
+  // INFINITE SCROLL
   // ================================================================
   let observer = new IntersectionObserver((entries) => {
     const last = entries[0];
@@ -546,11 +571,9 @@
     }
   }, { rootMargin: '200px' });
 
-  // Re-apply observer after each render
   const origRender = renderMovies;
   renderMovies = function(movies) {
     origRender(movies);
-    // Observe last card
     const cards = grid.querySelectorAll('.movie-card');
     if (cards.length > 0) {
       observer.observe(cards[cards.length - 1]);
@@ -560,14 +583,14 @@
   // ================================================================
   // INIT
   // ================================================================
-  if (API_KEY === 'YOUR_TMDB_API_KEY') {
+  if (TMDB_API_KEY === 'e0a7266a5d0e95c36475f349d8bc0a5a') {
     grid.innerHTML = `
       <div class="empty" style="padding:40px; background:#141414; border-radius:16px; border:1px solid #2a2a2a;">
         <p style="font-size:18px; margin-bottom:8px;">🔑 Kailangan mo ng TMDB API key</p>
         <p style="font-size:14px; color:#666;">
-          Pumunta sa <a href="https://www.themoviedb.org/signup" target="_blank" style="color:#4a9eff;">themoviedb.org</a>, 
+          Pumunta sa <a href="https://www.themoviedb.org/signup" target="_blank" style="color:#4a9eff;">themoviedb.org</a>,
           gumawa ng account, at kumuha ng API key. <br />
-          Pagkatapos, palitan ang <code style="background:#222; padding:2px 8px; border-radius:4px;">API_KEY</code> sa script.
+          Pagkatapos, palitan ang <code style="background:#222; padding:2px 8px; border-radius:4px;">TMDB_API_KEY</code> sa script.
         </p>
       </div>
     `;
@@ -575,7 +598,7 @@
     fetchMovies();
   }
 
-  console.log('[LisaFlix] Ready. API Key:', API_KEY ? '✅ set' : '❌ missing');
+  console.log('[LisaFlix] Streaming ready. API Key:', TMDB_API_KEY ? '✅ set' : '❌ missing');
 </script>
 </body>
 </html>
