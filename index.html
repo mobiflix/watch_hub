@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LisaFlix – Movie Browser</title>
+  <style>
+    /* ===== RESET & BASE ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #0b0b0b;
+      color: #e0e0e0;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding: 16px 0 24px;
+      border-bottom: 1px solid #222;
+      margin-bottom: 28px;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+    .logo span {
+      color: #4a9eff;
+    }
+
+    .search-box {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .search-box input {
+      padding: 10px 18px;
+      border: 1px solid #2a2a2a;
+      border-radius: 60px;
+      background: #1a1a1a;
+      color: #fff;
+      font-size: 15px;
+      min-width: 200px;
+      outline: none;
+      transition: 0.25s;
+    }
+
+    .search-box input:focus {
+      border-color: #4a9eff;
+      background: #1e1e1e;
+    }
+
+    .search-box input::placeholder {
+      color: #555;
+    }
+
+    .search-box button {
+      padding: 10px 24px;
+      background: #4a9eff;
+      color: #fff;
+      border: none;
+      border-radius: 60px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .search-box button:hover {
+      background: #3a8aee;
+      transform: scale(1.02);
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 12px 0 20px;
+    }
+
+    .filter-group button {
+      padding: 6px 18px;
+      border: 1px solid #2a2a2a;
+      border-radius: 60px;
+      background: transparent;
+      color: #aaa;
+      font-size: 13px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .filter-group button:hover,
+    .filter-group button.active {
+      background: #4a9eff;
+      color: #fff;
+      border-color: #4a9eff;
+    }
+
+    /* ===== MOVIE GRID ===== */
+    .movie-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 24px;
+      margin-top: 16px;
+    }
+
+    .movie-card {
+      background: #141414;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid #222;
+      transition: 0.25s;
+      cursor: pointer;
+    }
+
+    .movie-card:hover {
+      transform: scale(1.03);
+      border-color: #4a9eff;
+      box-shadow: 0 8px 30px rgba(74, 158, 255, 0.15);
+    }
+
+    .movie-card img {
+      width: 100%;
+      height: 270px;
+      object-fit: cover;
+      display: block;
+      background: #1a1a1a;
+    }
+
+    .movie-card .info {
+      padding: 14px 14px 18px;
+    }
+
+    .movie-card .info h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .movie-card .info .meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: #888;
+    }
+
+    .movie-card .info .rating {
+      color: #f5c518;
+      font-weight: 600;
+    }
+
+    /* ===== MODAL (DETAILS) ===== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(6px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 999;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: #181818;
+      max-width: 700px;
+      width: 100%;
+      border-radius: 24px;
+      border: 1px solid #2a2a2a;
+      padding: 32px;
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: fadeUp 0.3s ease;
+    }
+
+    .modal .close-btn {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: #888;
+      font-size: 28px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .modal .close-btn:hover {
+      color: #fff;
+    }
+
+    .modal .modal-poster {
+      width: 100%;
+      max-height: 320px;
+      object-fit: cover;
+      border-radius: 16px;
+      margin-bottom: 16px;
+      background: #1a1a1a;
+    }
+
+    .modal h2 {
+      font-size: 26px;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .modal .tagline {
+      color: #888;
+      font-style: italic;
+      margin-bottom: 12px;
+    }
+
+    .modal .overview {
+      color: #ccc;
+      line-height: 1.6;
+      font-size: 15px;
+      margin-bottom: 16px;
+    }
+
+    .modal .details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 20px;
+      font-size: 14px;
+      color: #aaa;
+    }
+
+    .modal .details-grid strong {
+      color: #ddd;
+    }
+
+    .modal .details-grid .label {
+      color: #666;
+    }
+
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(16px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== LOADING & EMPTY ===== */
+    .loading {
+      text-align: center;
+      color: #666;
+      padding: 60px 0;
+      font-size: 18px;
+    }
+
+    .empty {
+      text-align: center;
+      color: #555;
+      padding: 60px 0;
+      font-size: 18px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .search-box input {
+        min-width: 0;
+        width: 100%;
+      }
+      .search-box button {
+        width: 100%;
+      }
+      .movie-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 16px;
+      }
+      .movie-card img {
+        height: 200px;
+      }
+      .modal {
+        padding: 20px;
+      }
+      .modal .details-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- HEADER -->
+  <header>
+    <div class="logo">Lisa<span>Flix</span></div>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search movies..." />
+      <button id="searchBtn">Search</button>
+    </div>
+  </header>
+
+  <!-- GENRE FILTERS -->
+  <div class="filter-group" id="genreFilters">
+    <button class="active" data-genre="">All</button>
+    <button data-genre="28">Action</button>
+    <button data-genre="35">Comedy</button>
+    <button data-genre="18">Drama</button>
+    <button data-genre="27">Horror</button>
+    <button data-genre="878">Sci-Fi</button>
+    <button data-genre="10749">Romance</button>
+    <button data-genre="99">Documentary</button>
+  </div>
+
+  <!-- MOVIE GRID -->
+  <div id="movieGrid" class="movie-grid">
+    <div class="loading">Loading movies...</div>
+  </div>
+</div>
+
+<!-- ===== MODAL ===== -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <button class="close-btn" id="closeModalBtn">&times;</button>
+    <img class="modal-poster" id="modalPoster" src="" alt="Poster" />
+    <h2 id="modalTitle"></h2>
+    <div class="tagline" id="modalTagline"></div>
+    <div class="overview" id="modalOverview"></div>
+    <div class="details-grid">
+      <div><span class="label">⭐ Rating</span> <span id="modalRating">—</span></div>
+      <div><span class="label">📅 Release</span> <span id="modalRelease">—</span></div>
+      <div><span class="label">🎬 Genres</span> <span id="modalGenres">—</span></div>
+      <div><span class="label">⏱ Runtime</span> <span id="modalRuntime">—</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ================================================================
+  // CONFIGURATION – GET YOUR FREE API KEY FROM TMDB
+  // ================================================================
+  const API_KEY = 'YOUR_TMDB_API_KEY'; // ← PALITAN ITO
+  const BASE_IMAGE = 'https://image.tmdb.org/t/p/w500';
+
+  // ================================================================
+  // STATE
+  // ================================================================
+  let currentPage = 1;
+  let currentGenre = '';
+  let currentQuery = '';
+  let isLoading = false;
+
+  // ================================================================
+  // DOM REFS
+  // ================================================================
+  const grid = document.getElementById('movieGrid');
+  const searchInput = document.getElementById('searchInput');
+  const searchBtn = document.getElementById('searchBtn');
+  const genreFilters = document.getElementById('genreFilters');
+
+  // Modal
+  const modalOverlay = document.getElementById('modalOverlay');
+  const closeModalBtn = document.getElementById('closeModalBtn');
+  const modalPoster = document.getElementById('modalPoster');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalTagline = document.getElementById('modalTagline');
+  const modalOverview = document.getElementById('modalOverview');
+  const modalRating = document.getElementById('modalRating');
+  const modalRelease = document.getElementById('modalRelease');
+  const modalGenres = document.getElementById('modalGenres');
+  const modalRuntime = document.getElementById('modalRuntime');
+
+  // ================================================================
+  // FETCH MOVIES
+  // ================================================================
+  async function fetchMovies(page = 1) {
+    if (isLoading) return;
+    isLoading = true;
+    grid.innerHTML = '<div class="loading">Loading...</div>';
+
+    try {
+      let url;
+      if (currentQuery.trim()) {
+        url = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(currentQuery)}&page=${page}`;
+      } else if (currentGenre) {
+        url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=${currentGenre}&page=${page}&sort_by=popularity.desc`;
+      } else {
+        url = `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&page=${page}`;
+      }
+
+      const res = await fetch(url);
+      const data = await res.json();
+
+      if (data.results && data.results.length > 0) {
+        renderMovies(data.results);
+      } else {
+        grid.innerHTML = '<div class="empty">No movies found.</div>';
+      }
+    } catch (err) {
+      grid.innerHTML = '<div class="empty">Error loading movies. Check your API key or internet.</div>';
+      console.error(err);
+    }
+
+    isLoading = false;
+  }
+
+  // ================================================================
+  // RENDER MOVIES
+  // ================================================================
+  function renderMovies(movies) {
+    grid.innerHTML = movies.map(m => {
+      const poster = m.poster_path
+        ? `${BASE_IMAGE}${m.poster_path}`
+        : 'https://via.placeholder.com/500x750/1a1a1a/444?text=No+Poster';
+      const rating = m.vote_average ? m.vote_average.toFixed(1) : '—';
+      const year = m.release_date ? m.release_date.slice(0, 4) : '—';
+      return `
+        <div class="movie-card" data-id="${m.id}">
+          <img src="${poster}" alt="${m.title}" loading="lazy" />
+          <div class="info">
+            <h3>${m.title}</h3>
+            <div class="meta">
+              <span>${year}</span>
+              <span class="rating">⭐ ${rating}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Click to open modal
+    grid.querySelectorAll('.movie-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const id = card.dataset.id;
+        openModal(id);
+      });
+    });
+  }
+
+  // ================================================================
+  // MODAL – FETCH DETAILS
+  // ================================================================
+  async function openModal(movieId) {
+    try {
+      const res = await fetch(
+        `https://api.themoviedb.org/3/movie/${movieId}?api_key=${API_KEY}&append_to_response=credits`
+      );
+      const m = await res.json();
+
+      modalPoster.src = m.poster_path
+        ? `${BASE_IMAGE}${m.poster_path}`
+        : 'https://via.placeholder.com/500x750/1a1a1a/444?text=No+Poster';
+      modalTitle.textContent = m.title;
+      modalTagline.textContent = m.tagline || '';
+      modalOverview.textContent = m.overview || 'No overview available.';
+      modalRating.textContent = m.vote_average ? m.vote_average.toFixed(1) + ' / 10' : '—';
+      modalRelease.textContent = m.release_date || '—';
+      modalGenres.textContent = m.genres ? m.genres.map(g => g.name).join(', ') : '—';
+      modalRuntime.textContent = m.runtime ? m.runtime + ' min' : '—';
+
+      modalOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    } catch (err) {
+      console.error(err);
+      alert('Error loading movie details.');
+    }
+  }
+
+  function closeModal() {
+    modalOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  // ================================================================
+  // EVENT LISTENERS
+  // ================================================================
+  // Search
+  searchBtn.addEventListener('click', () => {
+    currentQuery = searchInput.value.trim();
+    currentPage = 1;
+    fetchMovies();
+  });
+
+  searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      currentQuery = searchInput.value.trim();
+      currentPage = 1;
+      fetchMovies();
+    }
+  });
+
+  // Genre filters
+  genreFilters.addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    genreFilters.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentGenre = btn.dataset.genre || '';
+    currentQuery = '';
+    searchInput.value = '';
+    currentPage = 1;
+    fetchMovies();
+  });
+
+  // Modal close
+  closeModalBtn.addEventListener('click', closeModal);
+  modalOverlay.addEventListener('click', (e) => {
+    if (e.target === modalOverlay) closeModal();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  // ================================================================
+  // INFINITE SCROLL (LOAD MORE)
+  // ================================================================
+  let observer = new IntersectionObserver((entries) => {
+    const last = entries[0];
+    if (last.isIntersecting && !isLoading) {
+      currentPage++;
+      fetchMovies(currentPage);
+    }
+  }, { rootMargin: '200px' });
+
+  // Re-apply observer after each render
+  const origRender = renderMovies;
+  renderMovies = function(movies) {
+    origRender(movies);
+    // Observe last card
+    const cards = grid.querySelectorAll('.movie-card');
+    if (cards.length > 0) {
+      observer.observe(cards[cards.length - 1]);
+    }
+  };
+
+  // ================================================================
+  // INIT
+  // ================================================================
+  if (API_KEY === 'YOUR_TMDB_API_KEY') {
+    grid.innerHTML = `
+      <div class="empty" style="padding:40px; background:#141414; border-radius:16px; border:1px solid #2a2a2a;">
+        <p style="font-size:18px; margin-bottom:8px;">🔑 Kailangan mo ng TMDB API key</p>
+        <p style="font-size:14px; color:#666;">
+          Pumunta sa <a href="https://www.themoviedb.org/signup" target="_blank" style="color:#4a9eff;">themoviedb.org</a>, 
+          gumawa ng account, at kumuha ng API key. <br />
+          Pagkatapos, palitan ang <code style="background:#222; padding:2px 8px; border-radius:4px;">API_KEY</code> sa script.
+        </p>
+      </div>
+    `;
+  } else {
+    fetchMovies();
+  }
+
+  console.log('[LisaFlix] Ready. API Key:', API_KEY ? '✅ set' : '❌ missing');
+</script>
+</body>
+</html>
