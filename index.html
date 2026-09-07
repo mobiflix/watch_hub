@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Grid Editor – 2 per Row</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0b0b0b;
+      color: #e0e0e0;
+      padding: 30px 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .sub {
+      color: #888;
+      font-size: 15px;
+      margin-bottom: 28px;
+    }
+
+    /* ===== FORM ===== */
+    .form-panel {
+      background: #141414;
+      border: 1px solid #2a2a2a;
+      border-radius: 20px;
+      padding: 24px 28px;
+      margin-bottom: 32px;
+    }
+
+    .form-panel h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 14px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    @media (max-width: 600px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      color: #aaa;
+      margin-bottom: 4px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #2a2a2a;
+      border-radius: 10px;
+      background: #1a1a1a;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    .form-group input:focus {
+      border-color: #4a9eff;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .btn {
+      padding: 10px 24px;
+      border: none;
+      border-radius: 60px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn-primary {
+      background: #4a9eff;
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #3a8aee;
+      transform: scale(1.02);
+    }
+
+    .btn-danger {
+      background: #ff4757;
+      color: #fff;
+    }
+
+    .btn-danger:hover {
+      background: #e63946;
+    }
+
+    .btn-secondary {
+      background: #2a2a2a;
+      color: #ddd;
+    }
+
+    .btn-secondary:hover {
+      background: #3a3a3a;
+    }
+
+    /* ===== GRID ===== */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 640px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .grid-item {
+      background: #141414;
+      border: 1px solid #2a2a2a;
+      border-radius: 16px;
+      overflow: hidden;
+      transition: 0.25s;
+      position: relative;
+    }
+
+    .grid-item:hover {
+      border-color: #4a9eff;
+      box-shadow: 0 8px 30px rgba(74, 158, 255, 0.1);
+    }
+
+    .grid-item a {
+      display: block;
+      text-decoration: none;
+    }
+
+    .grid-item img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      display: block;
+      background: #1a1a1a;
+    }
+
+    .grid-item .info {
+      padding: 14px 16px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .grid-item .info .label {
+      color: #aaa;
+      font-size: 13px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 140px;
+    }
+
+    .grid-item .info .actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .grid-item .info .actions button {
+      background: transparent;
+      border: none;
+      color: #888;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.2s;
+      padding: 4px 6px;
+      border-radius: 6px;
+    }
+
+    .grid-item .info .actions button:hover {
+      color: #fff;
+      background: #2a2a2a;
+    }
+
+    .grid-item .info .actions .edit-btn:hover {
+      color: #4a9eff;
+    }
+
+    .grid-item .info .actions .delete-btn:hover {
+      color: #ff4757;
+    }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 20px;
+      color: #555;
+      font-size: 18px;
+    }
+
+    .empty-state span {
+      font-size: 48px;
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    /* ===== TOAST ===== */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #2a2a2a;
+      color: #fff;
+      padding: 12px 28px;
+      border-radius: 60px;
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0;
+      transition: 0.4s;
+      pointer-events: none;
+      border: 1px solid #3a3a3a;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+
+    /* ===== EDIT MODE (inline) ===== */
+    .edit-inline {
+      padding: 16px;
+      background: #1a1a1a;
+      border-top: 1px solid #2a2a2a;
+    }
+
+    .edit-inline .form-group {
+      margin-bottom: 10px;
+    }
+
+    .edit-inline .form-group input {
+      padding: 8px 12px;
+      font-size: 13px;
+    }
+
+    .edit-inline .edit-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .edit-inline .edit-actions button {
+      padding: 6px 18px;
+      border: none;
+      border-radius: 60px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .edit-inline .edit-actions .save-edit {
+      background: #4a9eff;
+      color: #fff;
+    }
+
+    .edit-inline .edit-actions .save-edit:hover {
+      background: #3a8aee;
+    }
+
+    .edit-inline .edit-actions .cancel-edit {
+      background: #2a2a2a;
+      color: #ddd;
+    }
+
+    .edit-inline .edit-actions .cancel-edit:hover {
+      background: #3a3a3a;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🖼️ Image Grid Editor</h1>
+  <p class="sub">2 images per row — click any image to visit its link. Edit or delete anytime.</p>
+
+  <!-- ===== ADD FORM ===== -->
+  <div class="form-panel">
+    <h3>➕ Add New Image</h3>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Image URL</label>
+        <input type="url" id="imageUrlInput" placeholder="https://example.com/image.jpg" />
+      </div>
+      <div class="form-group">
+        <label>Link URL (destination)</label>
+        <input type="url" id="linkUrlInput" placeholder="https://example.com" />
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-primary" id="addBtn">➕ Add Image</button>
+      <button class="btn btn-secondary" id="resetBtn">🗑️ Reset All</button>
+    </div>
+  </div>
+
+  <!-- ===== GRID ===== -->
+  <div class="grid" id="gridContainer">
+    <div class="empty-state">
+      <span>📸</span>
+      No images yet.<br />Add your first image above.
+    </div>
+  </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ================================================================
+  // STATE
+  // ================================================================
+  let items = [];
+
+  // ================================================================
+  // DOM REFS
+  // ================================================================
+  const grid = document.getElementById('gridContainer');
+  const imageUrlInput = document.getElementById('imageUrlInput');
+  const linkUrlInput = document.getElementById('linkUrlInput');
+  const addBtn = document.getElementById('addBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const toast = document.getElementById('toast');
+
+  // ================================================================
+  // STORAGE
+  // ================================================================
+  function loadData() {
+    try {
+      const raw = localStorage.getItem('imageGridItems');
+      if (raw) {
+        items = JSON.parse(raw);
+        if (!Array.isArray(items)) items = [];
+      } else {
+        // Default sample data
+        items = [
+          { id: Date.now() + 1, image: 'https://picsum.photos/seed/1/600/400', link: 'https://example.com/1' },
+          { id: Date.now() + 2, image: 'https://picsum.photos/seed/2/600/400', link: 'https://example.com/2' },
+          { id: Date.now() + 3, image: 'https://picsum.photos/seed/3/600/400', link: 'https://example.com/3' },
+          { id: Date.now() + 4, image: 'https://picsum.photos/seed/4/600/400', link: 'https://example.com/4' }
+        ];
+        saveData();
+      }
+    } catch {
+      items = [];
+    }
+  }
+
+  function saveData() {
+    localStorage.setItem('imageGridItems', JSON.stringify(items));
+  }
+
+  // ================================================================
+  // RENDER GRID
+  // ================================================================
+  function renderGrid() {
+    if (!items || items.length === 0) {
+      grid.innerHTML = `
+        <div class="empty-state">
+          <span>📸</span>
+          No images yet.<br />Add your first image above.
+        </div>
+      `;
+      return;
+    }
+
+    grid.innerHTML = items.map((item, index) => `
+      <div class="grid-item" data-index="${index}">
+        <a href="${item.link || '#'}" target="_blank" rel="noopener">
+          <img src="${item.image || 'https://via.placeholder.com/600x400/1a1a1a/444?text=No+Image'}" alt="Image ${index + 1}" loading="lazy" />
+        </a>
+        <div class="info">
+          <span class="label" title="${item.link || ''}">${item.link ? item.link.slice(0, 40) + (item.link.length > 40 ? '…' : '') : 'No link'}</span>
+          <div class="actions">
+            <button class="edit-btn" data-index="${index}" title="Edit">✏️</button>
+            <button class="delete-btn" data-index="${index}" title="Delete">🗑️</button>
+          </div>
+        </div>
+        <!-- Edit inline (hidden by default) -->
+        <div class="edit-inline" id="edit-${index}" style="display:none;">
+          <div class="form-group">
+            <label>Image URL</label>
+            <input type="url" class="edit-image-input" value="${item.image || ''}" />
+          </div>
+          <div class="form-group">
+            <label>Link URL</label>
+            <input type="url" class="edit-link-input" value="${item.link || ''}" />
+          </div>
+          <div class="edit-actions">
+            <button class="save-edit" data-index="${index}">💾 Save</button>
+            <button class="cancel-edit" data-index="${index}">Cancel</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    // ===== EVENT DELEGATION =====
+    // Delete
+    grid.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const idx = parseInt(this.dataset.index);
+        deleteItem(idx);
+      });
+    });
+
+    // Edit – show inline form
+    grid.querySelectorAll('.edit-btn').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const idx = parseInt(this.dataset.index);
+        toggleEdit(idx, true);
+      });
+    });
+
+    // Save edit
+    grid.querySelectorAll('.save-edit').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const idx = parseInt(this.dataset.index);
+        saveEdit(idx);
+      });
+    });
+
+    // Cancel edit
+    grid.querySelectorAll('.cancel-edit').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const idx = parseInt(this.dataset.index);
+        toggleEdit(idx, false);
+      });
+    });
+
+    // Click on image opens link (already handled by <a>)
+  }
+
+  // ================================================================
+  // CRUD OPERATIONS
+  // ================================================================
+  function addItem(image, link) {
+    if (!image.trim()) {
+      showToast('⚠️ Please enter an image URL.');
+      return false;
+    }
+    items.push({
+      id: Date.now(),
+      image: image.trim(),
+      link: link.trim() || '#'
+    });
+    saveData();
+    renderGrid();
+    showToast('✅ Image added!');
+    imageUrlInput.value = '';
+    linkUrlInput.value = '';
+    return true;
+  }
+
+  function deleteItem(index) {
+    if (index < 0 || index >= items.length) return;
+    if (!confirm('Delete this image?')) return;
+    items.splice(index, 1);
+    saveData();
+    renderGrid();
+    showToast('🗑️ Image deleted.');
+  }
+
+  function saveEdit(index) {
+    const card = grid.querySelector(`.grid-item[data-index="${index}"]`);
+    if (!card) return;
+    const imgInput = card.querySelector('.edit-image-input');
+    const linkInput = card.querySelector('.edit-link-input');
+    const newImage = imgInput.value.trim();
+    const newLink = linkInput.value.trim();
+
+    if (!newImage) {
+      showToast('⚠️ Image URL cannot be empty.');
+      return;
+    }
+
+    items[index].image = newImage;
+    items[index].link = newLink || '#';
+    saveData();
+    renderGrid();
+    showToast('✅ Updated!');
+  }
+
+  function toggleEdit(index, show) {
+    const card = grid.querySelector(`.grid-item[data-index="${index}"]`);
+    if (!card) return;
+    const editPanel = card.querySelector('.edit-inline');
+    if (editPanel) {
+      editPanel.style.display = show ? 'block' : 'none';
+      // Populate current values
+      if (show) {
+        const imgInput = editPanel.querySelector('.edit-image-input');
+        const linkInput = editPanel.querySelector('.edit-link-input');
+        if (imgInput) imgInput.value = items[index].image || '';
+        if (linkInput) linkInput.value = items[index].link || '';
+      }
+    }
+  }
+
+  function resetAll() {
+    if (!confirm('Delete ALL images? This cannot be undone.')) return;
+    items = [];
+    saveData();
+    renderGrid();
+    showToast('🗑️ All images cleared.');
+  }
+
+  // ================================================================
+  // TOAST
+  // ================================================================
+  let toastTimer;
+
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toast.classList.remove('show');
+    }, 2800);
+  }
+
+  // ================================================================
+  // EVENT LISTENERS
+  // ================================================================
+  addBtn.addEventListener('click', () => {
+    addItem(imageUrlInput.value, linkUrlInput.value);
+  });
+
+  // Enter key on inputs
+  imageUrlInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      linkUrlInput.focus();
+    }
+  });
+
+  linkUrlInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addItem(imageUrlInput.value, linkUrlInput.value);
+    }
+  });
+
+  resetBtn.addEventListener('click', resetAll);
+
+  // ================================================================
+  // INIT
+  // ================================================================
+  loadData();
+  renderGrid();
+  console.log('[ImageGrid] Ready. Items:', items.length);
+</script>
+</body>
+</html>
