@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>K‑Drama Hub</title>
+  <title>My Personal Blog</title>
   <style>
+    /* ===== RESET & BASE ===== */
     * {
       margin: 0;
       padding: 0;
@@ -12,314 +13,248 @@
     }
 
     body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: #0a0a0f;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #0b0b0f;
       color: #e0e0e0;
       padding: 30px 20px 60px;
       min-height: 100vh;
-      background-image: radial-gradient(circle at 20% 30%, rgba(255, 107, 107, 0.05) 0%, transparent 60%),
-                        radial-gradient(circle at 80% 70%, rgba(255, 215, 0, 0.04) 0%, transparent 60%);
+      background-image: radial-gradient(circle at 20% 30%, rgba(74, 158, 255, 0.04) 0%, transparent 60%);
     }
 
     .container {
-      max-width: 1100px;
+      max-width: 900px;
       margin: 0 auto;
     }
 
     /* ===== HEADER ===== */
-    .header {
+    header {
       display: flex;
       justify-content: space-between;
-      align-items: flex-end;
+      align-items: center;
       flex-wrap: wrap;
       gap: 16px;
-      margin-bottom: 32px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
       padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      margin-bottom: 32px;
     }
 
-    .header-left h1 {
-      font-size: 36px;
+    header h1 {
+      font-size: 32px;
       font-weight: 700;
-      letter-spacing: -0.5px;
-      background: linear-gradient(135deg, #ff6b6b, #ffd93d);
+      background: linear-gradient(135deg, #4a9eff, #6c5ce7);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
 
-    .header-left p {
-      color: #666;
-      font-size: 14px;
-      margin-top: 2px;
-      letter-spacing: 0.3px;
-    }
-
-    .search-box {
+    header .controls {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       align-items: center;
       flex-wrap: wrap;
     }
 
-    .search-box input {
-      padding: 8px 16px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 60px;
-      background: rgba(255, 255, 255, 0.04);
-      color: #fff;
-      font-size: 14px;
-      outline: none;
-      width: 200px;
-      transition: 0.2s;
-    }
-
-    .search-box input:focus {
-      border-color: #ff6b6b;
-      background: rgba(255, 255, 255, 0.06);
-    }
-
-    .search-box button {
+    header .controls button {
       padding: 8px 20px;
       border: none;
       border-radius: 60px;
-      background: #ff6b6b;
-      color: #fff;
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
       transition: 0.2s;
     }
 
-    .search-box button:hover {
-      background: #e55555;
-      transform: scale(1.02);
-    }
-
-    /* ===== GRID ===== */
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 28px;
-      margin-top: 10px;
-    }
-
-    @media (max-width: 640px) {
-      .grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-      }
-    }
-
-    @media (max-width: 400px) {
-      .grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
-      }
-    }
-
-    /* ===== DRAMA CARD ===== */
-    .drama-card {
-      background: rgba(16, 16, 24, 0.7);
-      backdrop-filter: blur(4px);
-      border: 1px solid rgba(255, 255, 255, 0.04);
-      border-radius: 20px;
-      overflow: hidden;
-      transition: 0.35s cubic-bezier(0.2, 0, 0, 1);
-      position: relative;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
-      cursor: pointer;
-    }
-
-    .drama-card:hover {
-      transform: translateY(-6px) scale(1.01);
-      border-color: rgba(255, 107, 107, 0.3);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 107, 107, 0.05);
-    }
-
-    .drama-card .poster {
-      width: 100%;
-      height: 280px;
-      object-fit: cover;
-      display: block;
-      background: #0a0a0f;
-      transition: 0.4s;
-    }
-
-    .drama-card:hover .poster {
-      transform: scale(1.02);
-    }
-
-    @media (max-width: 640px) {
-      .drama-card .poster {
-        height: 200px;
-      }
-    }
-
-    @media (max-width: 400px) {
-      .drama-card .poster {
-        height: 260px;
-      }
-    }
-
-    .drama-card .info {
-      padding: 16px 18px 18px;
-      border-top: 1px solid rgba(255, 255, 255, 0.03);
-    }
-
-    .drama-card .info h3 {
-      font-size: 16px;
-      font-weight: 600;
+    .btn-new {
+      background: #4a9eff;
       color: #fff;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
 
-    .drama-card .info .meta {
-      display: flex;
-      justify-content: space-between;
-      font-size: 13px;
-      color: #888;
-      margin-top: 4px;
+    .btn-new:hover {
+      background: #3a8aee;
+      transform: scale(1.02);
     }
 
-    .drama-card .info .rating {
-      color: #ffd93d;
-      font-weight: 600;
+    .btn-lock {
+      background: rgba(255, 255, 255, 0.06);
+      color: #aaa;
     }
 
-    /* ===== LOADING / EMPTY ===== */
-    .loading,
-    .empty {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 60px 20px;
-      color: #666;
-      font-size: 18px;
+    .btn-lock:hover {
+      background: rgba(255, 255, 255, 0.1);
     }
 
-    .empty span {
-      font-size: 48px;
+    .btn-lock.unlocked {
+      background: #ff6b6b;
+      color: #fff;
+    }
+
+    .btn-lock.unlocked:hover {
+      background: #e55555;
+    }
+
+    /* ===== POST FORM ===== */
+    .post-form {
+      background: rgba(20, 20, 30, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 20px;
+      padding: 24px 28px;
+      margin-bottom: 32px;
+      display: none;
+    }
+
+    .post-form.open {
       display: block;
+    }
+
+    .post-form input,
+    .post-form textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.4);
+      color: #fff;
+      font-size: 15px;
+      outline: none;
+      transition: 0.2s;
+      font-family: inherit;
       margin-bottom: 12px;
     }
 
-    /* ===== PLAYER OVERLAY ===== */
-    .player-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.94);
-      backdrop-filter: blur(12px);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      z-index: 999;
-      flex-direction: column;
+    .post-form input:focus,
+    .post-form textarea:focus {
+      border-color: #4a9eff;
+      background: rgba(0, 0, 0, 0.6);
     }
 
-    .player-overlay.active {
+    .post-form textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    .post-form .form-actions {
       display: flex;
-    }
-
-    .player-box {
-      width: 100%;
-      max-width: 960px;
-      background: #0d0d0d;
-      border-radius: 24px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      overflow: hidden;
-      position: relative;
-      padding: 16px 16px 20px;
-    }
-
-    .player-box .close-btn {
-      position: absolute;
-      top: 8px;
-      right: 16px;
-      background: rgba(0, 0, 0, 0.7);
-      border: none;
-      color: #fff;
-      font-size: 30px;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      cursor: pointer;
-      z-index: 10;
-      transition: 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .player-box .close-btn:hover {
-      background: #ff6b6b;
-    }
-
-    .player-box .drama-title {
-      font-size: 20px;
-      font-weight: 600;
-      color: #fff;
-      margin: 4px 0 12px;
-      padding-right: 50px;
-    }
-
-    .player-box iframe {
-      width: 100%;
-      height: 460px;
-      border: none;
-      border-radius: 12px;
-      background: #000;
-    }
-
-    .player-box .source-selector {
-      display: flex;
-      gap: 10px;
-      margin-top: 14px;
+      gap: 12px;
       flex-wrap: wrap;
     }
 
-    .player-box .source-selector button {
-      padding: 8px 20px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
+    .post-form .form-actions button {
+      padding: 10px 24px;
+      border: none;
       border-radius: 60px;
-      background: transparent;
-      color: #aaa;
       font-size: 14px;
+      font-weight: 600;
       cursor: pointer;
       transition: 0.2s;
     }
 
-    .player-box .source-selector button:hover,
-    .player-box .source-selector button.active {
+    .btn-publish {
+      background: #4a9eff;
+      color: #fff;
+    }
+
+    .btn-publish:hover {
+      background: #3a8aee;
+      transform: scale(1.02);
+    }
+
+    .btn-cancel {
+      background: rgba(255, 255, 255, 0.06);
+      color: #aaa;
+    }
+
+    .btn-cancel:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* ===== BLOG POSTS ===== */
+    .post {
+      background: rgba(16, 16, 24, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 24px;
+      transition: 0.2s;
+    }
+
+    .post:hover {
+      border-color: rgba(74, 158, 255, 0.1);
+    }
+
+    .post .post-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .post .post-title {
+      font-size: 22px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .post .post-date {
+      font-size: 13px;
+      color: #666;
+      white-space: nowrap;
+    }
+
+    .post .post-content {
+      color: #ccc;
+      font-size: 16px;
+      line-height: 1.7;
+      margin-top: 6px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .post .post-actions {
+      margin-top: 14px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .post .post-actions button {
+      padding: 6px 16px;
+      border: none;
+      border-radius: 60px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      background: rgba(255, 255, 255, 0.04);
+      color: #888;
+    }
+
+    .post .post-actions button:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+
+    .post .post-actions .delete-btn:hover {
       background: #ff6b6b;
       color: #fff;
-      border-color: #ff6b6b;
     }
 
-    .player-box .error-msg {
-      color: #ff6b6b;
-      font-size: 14px;
-      margin-top: 10px;
-      display: none;
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #555;
+      font-size: 18px;
     }
 
-    @media (max-width: 640px) {
-      .player-box iframe {
-        height: 240px;
-      }
-      .player-box .drama-title {
-        font-size: 17px;
-      }
+    .empty-state span {
+      font-size: 56px;
+      display: block;
+      margin-bottom: 16px;
+      opacity: 0.5;
     }
 
-    @media (min-width: 641px) and (max-width: 1024px) {
-      .player-box iframe {
-        height: 380px;
-      }
-    }
-
+    /* ===== TOAST ===== */
     .toast {
       position: fixed;
       bottom: 30px;
@@ -342,253 +277,259 @@
     .toast.show {
       opacity: 1;
     }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 640px) {
+      header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .post-form {
+        padding: 18px 16px;
+      }
+      .post {
+        padding: 18px 16px;
+      }
+      .post .post-title {
+        font-size: 19px;
+      }
+    }
   </style>
 </head>
 <body>
 
 <div class="container">
   <!-- ===== HEADER ===== -->
-  <div class="header">
-    <div class="header-left">
-      <h1>🇰🇷 K‑Drama Hub</h1>
-      <p>2 per row · click poster to watch</p>
+  <header>
+    <h1>✍️ My Blog</h1>
+    <div class="controls">
+      <button class="btn-new" id="newPostBtn">+ New Post</button>
+      <button class="btn-lock" id="lockBtn">🔒 Locked</button>
     </div>
-    <div class="search-box">
-      <input type="text" id="searchInput" placeholder="Search K‑Drama..." />
-      <button id="searchBtn">Search</button>
+  </header>
+
+  <!-- ===== POST FORM ===== -->
+  <div class="post-form" id="postForm">
+    <input type="text" id="postTitleInput" placeholder="Post title..." />
+    <textarea id="postContentInput" placeholder="Write your post here..."></textarea>
+    <div class="form-actions">
+      <button class="btn-publish" id="publishBtn">📝 Publish</button>
+      <button class="btn-cancel" id="cancelBtn">Cancel</button>
     </div>
   </div>
 
-  <!-- ===== GRID ===== -->
-  <div class="grid" id="gridContainer">
-    <div class="loading">Loading K‑Dramas...</div>
-  </div>
-</div>
-
-<!-- ===== PLAYER OVERLAY ===== -->
-<div class="player-overlay" id="playerOverlay">
-  <div class="player-box">
-    <button class="close-btn" id="closePlayerBtn">&times;</button>
-    <div class="drama-title" id="playerTitle">Drama Title</div>
-    <iframe id="playerIframe" src="" allowfullscreen></iframe>
-    <div class="source-selector" id="sourceSelector">
-      <button class="active" data-src="vidsrc">VidSrc</button>
-      <button data-src="2embed">2Embed</button>
-      <button data-src="embed">Embed</button>
+  <!-- ===== BLOG POSTS ===== -->
+  <div id="postsContainer">
+    <div class="empty-state">
+      <span>📝</span>
+      No posts yet.<br />Click "New Post" to write your first entry.
     </div>
-    <div class="error-msg" id="playerError">⚠️ Failed to load video. Try another source.</div>
   </div>
 </div>
 
+<!-- ===== TOAST ===== -->
 <div class="toast" id="toast"></div>
 
 <script>
   // ================================================================
-  // CONFIG – GET YOUR FREE TMDB API KEY
+  // CONFIG – CHANGE YOUR PASSWORD HERE
   // ================================================================
-  const TMDB_API_KEY = 'e0a7266a5d0e95c36475f349d8bc0a5a'; // ← PALITAN ITO
-  const BASE_IMAGE = 'https://image.tmdb.org/t/p/w500';
-  const BACKDROP_IMAGE = 'https://image.tmdb.org/t/p/original';
+  const OWNER_PASSWORD = 'admin123'; // ← PALITAN ITO
+
+  // ================================================================
+  // STATE
+  // ================================================================
+  let posts = [];
+  let isUnlocked = false;
+  let editingIndex = null;
 
   // ================================================================
   // DOM REFS
   // ================================================================
-  const grid = document.getElementById('gridContainer');
-  const searchInput = document.getElementById('searchInput');
-  const searchBtn = document.getElementById('searchBtn');
-
-  const playerOverlay = document.getElementById('playerOverlay');
-  const closePlayerBtn = document.getElementById('closePlayerBtn');
-  const playerIframe = document.getElementById('playerIframe');
-  const playerTitle = document.getElementById('playerTitle');
-  const sourceSelector = document.getElementById('sourceSelector');
-  const playerError = document.getElementById('playerError');
+  const postsContainer = document.getElementById('postsContainer');
+  const postForm = document.getElementById('postForm');
+  const postTitleInput = document.getElementById('postTitleInput');
+  const postContentInput = document.getElementById('postContentInput');
+  const publishBtn = document.getElementById('publishBtn');
+  const cancelBtn = document.getElementById('cancelBtn');
+  const newPostBtn = document.getElementById('newPostBtn');
+  const lockBtn = document.getElementById('lockBtn');
   const toast = document.getElementById('toast');
 
-  let currentDramaId = null;
-
   // ================================================================
-  // FETCH K‑DRAMAS (TV series with Korean origin)
+  // STORAGE
   // ================================================================
-  async function fetchKDramas(endpoint, limit = 12) {
+  function loadPosts() {
     try {
-      // For Korean dramas, we filter by origin_country = KR
-      let url;
-      if (endpoint === 'popular') {
-        url = `https://api.themoviedb.org/3/tv/popular?api_key=${TMDB_API_KEY}&language=en-US&page=1&with_origin_country=KR`;
-      } else if (endpoint === 'top_rated') {
-        url = `https://api.themoviedb.org/3/tv/top_rated?api_key=${TMDB_API_KEY}&language=en-US&page=1&with_origin_country=KR`;
-      } else if (endpoint === 'airing_today') {
-        url = `https://api.themoviedb.org/3/tv/airing_today?api_key=${TMDB_API_KEY}&language=en-US&page=1&with_origin_country=KR`;
+      const raw = localStorage.getItem('blogPosts');
+      if (raw) {
+        posts = JSON.parse(raw);
+        if (!Array.isArray(posts)) posts = [];
       } else {
-        url = `https://api.themoviedb.org/3/tv/popular?api_key=${TMDB_API_KEY}&language=en-US&page=1&with_origin_country=KR`;
+        // Default sample posts
+        posts = [
+          { id: Date.now() + 1, title: 'Hello, World!', content: 'Welcome to my blog. This is my first post.', date: new Date().toLocaleDateString() },
+          { id: Date.now() + 2, title: 'My Second Post', content: 'This is another post. I love blogging!', date: new Date().toLocaleDateString() }
+        ];
+        savePosts();
       }
-
-      const res = await fetch(url);
-      const data = await res.json();
-      // Filter to ensure Korean origin
-      let results = data.results || [];
-      results = results.filter(tv => tv.origin_country && tv.origin_country.includes('KR'));
-      return results.slice(0, limit);
-    } catch (err) {
-      console.error('Error fetching K‑Dramas:', err);
-      return [];
+    } catch {
+      posts = [];
     }
   }
 
-  // ================================================================
-  // SEARCH K‑DRAMAS
-  // ================================================================
-  async function searchKDramas(query) {
-    if (!query.trim()) {
-      loadAll();
-      return;
-    }
-
-    try {
-      const res = await fetch(
-        `https://api.themoviedb.org/3/search/tv?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&language=en-US&page=1`
-      );
-      const data = await res.json();
-      const results = data.results?.filter(tv => tv.origin_country && tv.origin_country.includes('KR')) || [];
-      renderDramas(results, `🔍 Results for "${query}"`);
-    } catch (err) {
-      console.error(err);
-      grid.innerHTML = `<div class="empty">⚠️ Search error. Check API key or network.</div>`;
-    }
+  function savePosts() {
+    localStorage.setItem('blogPosts', JSON.stringify(posts));
   }
 
   // ================================================================
-  // RENDER DRAMAS
+  // RENDER POSTS
   // ================================================================
-  function renderDramas(dramas, title = '') {
-    if (!dramas || dramas.length === 0) {
-      grid.innerHTML = `
-        <div class="empty">
-          <span>🎭</span>
-          No K‑Dramas found.<br />Try a different search.
+  function renderPosts() {
+    if (!posts || posts.length === 0) {
+      postsContainer.innerHTML = `
+        <div class="empty-state">
+          <span>📝</span>
+          No posts yet.<br />Click "New Post" to write your first entry.
         </div>
       `;
       return;
     }
 
-    let html = '';
-    if (title) {
-      html += `<div style="grid-column:1/-1; padding:8px 0; color:#fff; font-size:18px;">${title}</div>`;
-    }
+    // Sort by newest first
+    const sorted = [...posts].reverse();
 
-    html += dramas.map(d => {
-      const poster = d.poster_path
-        ? `${BASE_IMAGE}${d.poster_path}`
-        : 'https://via.placeholder.com/500x750/1a1a1a/444?text=No+Poster';
-      const rating = d.vote_average ? d.vote_average.toFixed(1) : '—';
-      const year = d.first_air_date ? d.first_air_date.slice(0, 4) : '—';
+    postsContainer.innerHTML = sorted.map((post, index) => {
+      const realIndex = posts.length - 1 - index;
+      const actions = isUnlocked ? `
+        <div class="post-actions">
+          <button class="delete-btn" data-index="${realIndex}">🗑️ Delete</button>
+        </div>
+      ` : '';
+
       return `
-        <div class="drama-card" data-id="${d.id}" data-title="${d.name}">
-          <img class="poster" src="${poster}" alt="${d.name}" loading="lazy" />
-          <div class="info">
-            <h3>${d.name}</h3>
-            <div class="meta">
-              <span>${year}</span>
-              <span class="rating">⭐ ${rating}</span>
-            </div>
+        <div class="post">
+          <div class="post-header">
+            <div class="post-title">${post.title || 'Untitled'}</div>
+            <div class="post-date">${post.date || '—'}</div>
           </div>
+          <div class="post-content">${post.content || ''}</div>
+          ${actions}
         </div>
       `;
     }).join('');
 
-    grid.innerHTML = html;
-
-    // Attach click events
-    grid.querySelectorAll('.drama-card').forEach(card => {
-      card.addEventListener('click', () => {
-        const id = card.dataset.id;
-        const title = card.dataset.title;
-        openPlayer(id, title);
+    // Attach delete events if unlocked
+    if (isUnlocked) {
+      postsContainer.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const idx = parseInt(this.dataset.index);
+          deletePost(idx);
+        });
       });
-    });
+    }
   }
 
   // ================================================================
-  // LOAD ALL
+  // CRUD OPERATIONS
   // ================================================================
-  async function loadAll() {
-    grid.innerHTML = '<div class="loading">Loading K‑Dramas...</div>';
-    const popular = await fetchKDramas('popular', 12);
-    const topRated = await fetchKDramas('top_rated', 12);
-    const airing = await fetchKDramas('airing_today', 12);
-
-    // Combine and remove duplicates
-    const all = [...popular, ...topRated, ...airing];
-    const unique = [];
-    const seen = new Set();
-    for (const d of all) {
-      if (!seen.has(d.id)) {
-        seen.add(d.id);
-        unique.push(d);
-      }
+  function addPost(title, content) {
+    if (!isUnlocked) {
+      showToast('🔒 Unlock first to publish.');
+      return false;
+    }
+    if (!title.trim() || !content.trim()) {
+      showToast('⚠️ Please fill in both title and content.');
+      return false;
     }
 
-    if (unique.length === 0) {
-      grid.innerHTML = `
-        <div class="empty">
-          <span>🎭</span>
-          No K‑Dramas found.<br />Check your API key or network.
-        </div>
-      `;
+    posts.push({
+      id: Date.now(),
+      title: title.trim(),
+      content: content.trim(),
+      date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+    });
+
+    savePosts();
+    renderPosts();
+    showToast('✅ Post published!');
+    closeForm();
+    return true;
+  }
+
+  function deletePost(index) {
+    if (!isUnlocked) {
+      showToast('🔒 Unlock first to delete.');
       return;
     }
-
-    renderDramas(unique);
+    if (!confirm('Delete this post?')) return;
+    posts.splice(index, 1);
+    savePosts();
+    renderPosts();
+    showToast('🗑️ Post deleted.');
   }
 
   // ================================================================
-  // PLAYER
+  // FORM CONTROLS
   // ================================================================
-  function openPlayer(dramaId, title) {
-    currentDramaId = dramaId;
-    playerTitle.textContent = title || 'K‑Drama';
-    playerError.style.display = 'none';
-    playerOverlay.classList.add('active');
-    document.body.style.overflow = 'hidden';
-
-    const active = sourceSelector.querySelector('button.active');
-    const source = active ? active.dataset.src : 'vidsrc';
-    loadStream(source, dramaId);
-  }
-
-  function closePlayer() {
-    playerOverlay.classList.remove('active');
-    document.body.style.overflow = '';
-    playerIframe.src = '';
-    currentDramaId = null;
-  }
-
-  function loadStream(source, dramaId) {
-    if (!dramaId) dramaId = currentDramaId;
-    if (!dramaId) return;
-    playerError.style.display = 'none';
-
-    let embedUrl = '';
-    switch (source) {
-      case 'vidsrc':
-        embedUrl = `https://vidsrc.to/embed/tv/${dramaId}`;
-        break;
-      case '2embed':
-        embedUrl = `https://www.2embed.cc/embedtv/${dramaId}`;
-        break;
-      case 'embed':
-        embedUrl = `https://embed.su/embed/tv/${dramaId}`;
-        break;
-      default:
-        embedUrl = `https://vidsrc.to/embed/tv/${dramaId}`;
+  function openForm(editIndex = null) {
+    if (!isUnlocked) {
+      showToast('🔒 Unlock first to write.');
+      return;
     }
+    editingIndex = editIndex;
+    if (editIndex !== null && posts[editIndex]) {
+      postTitleInput.value = posts[editIndex].title;
+      postContentInput.value = posts[editIndex].content;
+      publishBtn.textContent = '💾 Update';
+    } else {
+      postTitleInput.value = '';
+      postContentInput.value = '';
+      publishBtn.textContent = '📝 Publish';
+    }
+    postForm.classList.add('open');
+    postTitleInput.focus();
+  }
 
-    playerIframe.src = embedUrl;
+  function closeForm() {
+    postForm.classList.remove('open');
+    postTitleInput.value = '';
+    postContentInput.value = '';
+    editingIndex = null;
+    publishBtn.textContent = '📝 Publish';
+  }
 
-    sourceSelector.querySelectorAll('button').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.src === source);
-    });
+  // ================================================================
+  // LOCK / UNLOCK
+  // ================================================================
+  function toggleLock() {
+    if (isUnlocked) {
+      lock();
+    } else {
+      const pass = prompt('Enter password to unlock:');
+      if (pass === OWNER_PASSWORD) {
+        unlock();
+      } else if (pass !== null) {
+        showToast('❌ Wrong password.');
+      }
+    }
+  }
+
+  function unlock() {
+    isUnlocked = true;
+    lockBtn.textContent = '🔓 Unlocked';
+    lockBtn.classList.add('unlocked');
+    showToast('🔓 Unlocked! You can now write and delete.');
+    renderPosts();
+  }
+
+  function lock() {
+    isUnlocked = false;
+    lockBtn.textContent = '🔒 Locked';
+    lockBtn.classList.remove('unlocked');
+    closeForm();
+    renderPosts();
+    showToast('🔒 Locked. View only mode.');
   }
 
   // ================================================================
@@ -606,46 +547,41 @@
   // ================================================================
   // EVENT LISTENERS
   // ================================================================
-  searchBtn.addEventListener('click', () => searchKDramas(searchInput.value));
-  searchInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') searchKDramas(searchInput.value);
+  newPostBtn.addEventListener('click', () => openForm());
+
+  cancelBtn.addEventListener('click', closeForm);
+
+  publishBtn.addEventListener('click', () => {
+    addPost(postTitleInput.value, postContentInput.value);
   });
 
-  closePlayerBtn.addEventListener('click', closePlayer);
-  playerOverlay.addEventListener('click', (e) => {
-    if (e.target === playerOverlay) closePlayer();
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closePlayer();
+  lockBtn.addEventListener('click', toggleLock);
+
+  // Enter key in title field moves to content
+  postTitleInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      postContentInput.focus();
+    }
   });
 
-  sourceSelector.addEventListener('click', (e) => {
-    const btn = e.target.closest('button');
-    if (!btn) return;
-    sourceSelector.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    loadStream(btn.dataset.src);
+  // Ctrl+Enter in content publishes
+  postContentInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      publishBtn.click();
+    }
   });
 
   // ================================================================
   // INIT
   // ================================================================
-  if (TMDB_API_KEY === 'YOUR_TMDB_API_KEY') {
-    grid.innerHTML = `
-      <div class="empty" style="padding:40px; background:#141414; border-radius:16px; border:1px solid #2a2a2a; grid-column:1/-1;">
-        <p style="font-size:18px; margin-bottom:8px;">🔑 Kailangan mo ng TMDB API key</p>
-        <p style="font-size:14px; color:#666;">
-          Pumunta sa <a href="https://www.themoviedb.org/signup" target="_blank" style="color:#ff6b6b;">themoviedb.org</a>,
-          gumawa ng account, at kumuha ng API key. <br />
-          Pagkatapos, palitan ang <code style="background:#222; padding:2px 8px; border-radius:4px;">TMDB_API_KEY</code> sa script.
-        </p>
-      </div>
-    `;
-  } else {
-    loadAll();
-  }
+  loadPosts();
+  renderPosts();
+  // Start locked by default
+  lock();
 
-  console.log('[KDramaHub] Ready. Enjoy K‑Dramas!');
+  console.log('[MyBlog] Ready. Password protected.');
 </script>
 </body>
 </html>
